@@ -8,7 +8,7 @@ let connection: Connection;
 
 
 
-describe("Create User Controller", () => {
+describe("Authenticate User Controller", () => {
 
     beforeAll(async () => {
         connection = await createDbConnection();
@@ -20,8 +20,8 @@ describe("Create User Controller", () => {
         await connection.close();
     })
 
-    it("Should be able to create a new user", async () => {
-        const response = await request(app)
+    it("Should be able to authenticate an user", async () => {
+        await request(app)
             .post("/api/v1/users")
             .send({
                 name: "Supertest Name",
@@ -29,18 +29,26 @@ describe("Create User Controller", () => {
                 password: "supertestpassword",
             });
 
-        expect(response.status).toBe(201);
-    });
-
-    it("Should not be able to create a new user with same e-mail", async () => {
         const response = await request(app)
-            .post("/api/v1/users")
+            .post("/api/v1/authentication/sessions")
             .send({
-                name: "Supertest Name2",
                 email: "supertest@email.com",
-                password: "supertestpassword2",
+                password: "supertestpassword",
             });
 
-        expect(response.status).toBe(400);
-    })
+        console.log(response.error);
+        expect(response.body).toHaveProperty("token");
+    });
+
+    // it("Should not be able to create a new user with same e-mail", async () => {
+    //     const response = await request(app)
+    //         .post("/api/v1/users")
+    //         .send({
+    //             name: "Supertest Name2",
+    //             email: "supertest@email.com",
+    //             password: "supertestpassword2",
+    //         });
+
+    //     expect(response.status).toBe(400);
+    // });
 });
