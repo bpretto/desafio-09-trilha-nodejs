@@ -8,6 +8,9 @@ import './database';
 import './shared/container';
 import { router } from './routes';
 import { AppError } from './shared/errors/AppError';
+import createDbConnection from './database';
+
+createDbConnection();
 
 const app = express();
 
