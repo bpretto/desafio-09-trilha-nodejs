@@ -13,6 +13,13 @@ describe("Authenticate User Controller", () => {
     beforeAll(async () => {
         connection = await createDbConnection();
         await connection.runMigrations();
+        await request(app)
+            .post("/api/v1/users")
+            .send({
+                name: "Supertest Name",
+                email: "supertest@email.com",
+                password: "supertestpassword",
+            });
     });
 
     afterAll(async () => {
@@ -21,22 +28,13 @@ describe("Authenticate User Controller", () => {
     })
 
     it("Should be able to authenticate an user", async () => {
-        await request(app)
-            .post("/api/v1/users")
-            .send({
-                name: "Supertest Name",
-                email: "supertest@email.com",
-                password: "supertestpassword",
-            });
-
         const response = await request(app)
-            .post("/api/v1/authentication/sessions")
+            .post("/api/v1/sessions")
             .send({
                 email: "supertest@email.com",
                 password: "supertestpassword",
             });
 
-        console.log(response.error);
         expect(response.body).toHaveProperty("token");
     });
 
