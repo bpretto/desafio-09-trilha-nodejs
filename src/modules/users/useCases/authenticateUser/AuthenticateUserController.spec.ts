@@ -6,8 +6,6 @@ import createDbConnection from '../../../../database';
 
 let connection: Connection;
 
-
-
 describe("Authenticate User Controller", () => {
 
     beforeAll(async () => {
@@ -38,15 +36,27 @@ describe("Authenticate User Controller", () => {
         expect(response.body).toHaveProperty("token");
     });
 
-    // it("Should not be able to create a new user with same e-mail", async () => {
-    //     const response = await request(app)
-    //         .post("/api/v1/users")
-    //         .send({
-    //             name: "Supertest Name2",
-    //             email: "supertest@email.com",
-    //             password: "supertestpassword2",
-    //         });
+    it("Should not be able to authenticate an user with wrong e-mail", async () => {
+        const response = await request(app)
+            .post("/api/v1/sessions")
+            .send({
+                email: "wrong@email.com",
+                password: "supertestpassword",
+            });
 
-    //     expect(response.status).toBe(400);
-    // });
+        expect(response.status).toBe(401);
+        expect(response.text).toEqual("{\"message\":\"Incorrect email or password\"}");
+    });
+
+    it("Should not be able to authenticate an user with wrong password", async () => {
+        const response = await request(app)
+            .post("/api/v1/sessions")
+            .send({
+                email: "supertest@email.com",
+                password: "wrongpassword",
+            });
+
+        expect(response.status).toBe(401);
+        expect(response.text).toEqual("{\"message\":\"Incorrect email or password\"}");
+    });
 });
