@@ -9,7 +9,7 @@ import { UsersRepository } from "../../repositories/UsersRepository";
 let connection: Connection;
 let usersRepository: UsersRepository;
 
-describe("Authenticate User Controller", () => {
+describe("Show User Profile Controller", () => {
 
     beforeAll(async () => {
         connection = await createDbConnection();
